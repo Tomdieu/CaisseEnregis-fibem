@@ -27,7 +27,7 @@ const POSProductsPage = () => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -77,11 +77,11 @@ const POSProductsPage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = (id: number) => {
     deleteProduct(id);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (editingProduct) {
