@@ -21,7 +21,7 @@ const POSReceiptsPage = () => {
   const { transactions } = usePOSStore();
   const [selectedReceipt, setSelectedReceipt] = useState(transactions[0] || null);
   const [searchTerm, setSearchTerm] = useState('');
-  const receiptRef = useRef();
+  const receiptRef = useRef(null);
 
   const filteredReceipts = transactions.filter(receipt =>
     receipt.id.toLowerCase().includes(searchTerm.toLowerCase()) ||

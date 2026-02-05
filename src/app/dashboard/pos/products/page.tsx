@@ -103,14 +103,14 @@ const POSProductsPage = () => {
     setIsDialogOpen(false);
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const getStockStatus = (stock) => {
+  const getStockStatus = (stock: number) => {
     if (stock <= 5) return { status: 'critical', icon: AlertTriangle, color: 'text-red-500' };
     if (stock <= 10) return { status: 'low', icon: AlertTriangle, color: 'text-yellow-500' };
     return { status: 'ok', icon: CheckCircle, color: 'text-green-500' };
