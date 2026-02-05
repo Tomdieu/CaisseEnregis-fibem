@@ -39,12 +39,12 @@ const POSUserManagementPage = () => {
   });
 
   // Filter users based on search term
-  const handleSearch = (term) => {
+  const handleSearch = (term: string) => {
     setSearchTerm(term);
     if (!term) {
       setFilteredUsers(users);
     } else {
-      const filtered = users.filter(user => 
+      const filtered = users.filter(user =>
         user.firstName.toLowerCase().includes(term.toLowerCase()) ||
         user.lastName.toLowerCase().includes(term.toLowerCase()) ||
         user.email.toLowerCase().includes(term.toLowerCase()) ||
