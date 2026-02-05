@@ -21,20 +21,20 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePOSStore } from '@/stores/posStore';
+import { usePOSStore, type User as UserType } from '@/stores/posStore';
 
 const POSUserManagementPage = () => {
   const { users, addUser, updateUser, deleteUser } = usePOSStore();
   const [filteredUsers, setFilteredUsers] = useState(users);
   const [searchTerm, setSearchTerm] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
+  const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    role: '',
+    role: '' as 'admin' | 'manager' | 'cashier' | '',
     password: ''
   });
 
@@ -66,7 +66,7 @@ const POSUserManagementPage = () => {
     setIsDialogOpen(true);
   };
 
-  const handleEditUser = (user: any) => {
+  const handleEditUser = (user: UserType) => {
     setEditingUser(user);
     setFormData({
       firstName: user.firstName,
@@ -86,27 +86,35 @@ const POSUserManagementPage = () => {
     e.preventDefault();
 
     if (editingUser) {
-      // Update existing user
-      updateUser(editingUser.id, formData);
+      const { role, password, ...rest } = formData;
+      const updates: Partial<UserType> = rest;
+      if (role) {
+        updates.role = role;
+      }
+      updateUser(editingUser.id, updates);
     } else {
       // Add new user
-      addUser({
-        ...formData,
-        status: 'active'
-      });
+      if (formData.role) {
+        const { password, ...rest } = formData;
+        addUser({
+          ...rest,
+          role: formData.role,
+          status: 'active',
+        });
+      }
     }
 
     setIsDialogOpen(false);
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const getRoleDetails = (role) => {
+  const getRoleDetails = (role: 'admin' | 'manager' | 'cashier') => {
     switch(role) {
       case 'admin':
         return { label: 'Administrateur', color: 'bg-red-100 text-red-800', permissions: ['Toutes les permissions'] };
@@ -216,7 +224,7 @@ const POSUserManagementPage = () => {
 
       {/* Permissions Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['admin', 'manager', 'cashier'].map((role) => {
+        {(['admin', 'manager', 'cashier'] as const).map((role) => {
           const roleDetails = getRoleDetails(role);
           return (
             <Card key={role}>
